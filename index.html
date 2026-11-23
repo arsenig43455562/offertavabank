@@ -78,6 +78,9 @@ h1.h{font-size:clamp(40px,12.5vw,74px);margin:14px 0 0;overflow-wrap:anywhere}
 /* стикер */
 .sticky{position:relative;margin:28px 0 0 auto;width:230px;background:var(--sticky);color:#111;font:600 18px/1.15 var(--body);letter-spacing:-.02em;
   padding:34px 18px 18px;transform:rotate(2deg);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.sticky[hidden]{display:none}
+.sticky.pop{animation:pop .5s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{opacity:0;transform:rotate(2deg) scale(.6)}to{opacity:1;transform:rotate(2deg) scale(1)}}
 .sticky:before{content:"";position:absolute;inset:0 0 auto 0;height:18px;background:var(--sticky-bar)}
 .sticky:after{content:"• • •";position:absolute;top:0;left:12px;font:700 12px/18px var(--body);color:rgba(0,0,0,.35);letter-spacing:2px}
 
@@ -146,18 +149,18 @@ h1.h{font-size:clamp(40px,12.5vw,74px);margin:14px 0 0;overflow-wrap:anywhere}
 
     <div class="chans">
       <!-- ССЫЛКИ НА КАНАЛЫ: поменять href и названия -->
-      <a class="chan" href="https://t.me/+OtA5BiD2sS8xZTQy" target="_blank" rel="noopener">
-        <span class="n">01</span><span class="t"><b>РКО Season канал</b><small>вся инфа по обучению</small></span><span class="go">Вступить</span>
-      </a>
-      <a class="chan" href="https://t.me/+b9rR0Z8grbgyZTFi" target="_blank" rel="noopener">
-        <span class="n">02</span><span class="t"><b>РКО Season чат</b><small>общение и вопросы</small></span><span class="go">Вступить</span>
+      <a class="chan" href="https://t.me/+AVbitOdhTy8zZmYy" target="_blank" rel="noopener">
+        <span class="n">01</span><span class="t"><b>Канал Вабанк</b><small>вся инфа по обучению</small></span><span class="go">Вступить</span>
       </a>
       <a class="chan" href="https://t.me/+wa4jIWF94Pc0ZjFi" target="_blank" rel="noopener">
-        <span class="n">03</span><span class="t"><b>Чат Вабанка</b><small>вступи обязательно</small></span><span class="go">Вступить</span>
+        <span class="n">02</span><span class="t"><b>Чат Вабанка</b><small>общение и вопросы</small></span><span class="go">Вступить</span>
+      </a>
+      <a class="chan" href="https://t.me/+b9rR0Z8grbgyZTFi" target="_blank" rel="noopener">
+        <span class="n">03</span><span class="t"><b>РКО Season чат</b><small>вступи обязательно</small></span><span class="go">Вступить</span>
       </a>
     </div>
 
-    <div class="sticky">вступил во все 3? ты в игре. увидимся на первом уроке 🔥</div>
+    <div class="sticky" id="final" hidden>вступил во все 3? ты в игре. увидимся на первом уроке 🔥</div>
   </section>
 </main>
 
@@ -233,6 +236,11 @@ form.addEventListener('submit', async e => {
 // отметка «вступил» на кнопке канала
 document.querySelectorAll('.chan').forEach(a => a.addEventListener('click', () => {
   a.classList.add('ok'); a.querySelector('.go').textContent = 'Открыто';
+  // стикер «ты в игре» — только когда нажаты все 3 кнопки
+  if (document.querySelectorAll('.chan.ok').length === document.querySelectorAll('.chan').length) {
+    const fin = document.getElementById('final');
+    if (fin.hidden) { fin.hidden = false; fin.classList.add('pop'); }
+  }
 }));
 </script>
 </body>
