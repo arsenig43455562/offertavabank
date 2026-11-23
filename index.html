@@ -70,6 +70,9 @@ h1.h{font-size:clamp(40px,12.5vw,74px);margin:14px 0 0;overflow-wrap:anywhere}
   padding:20px 24px;border-radius:99px;background:linear-gradient(180deg,#FF6A2B,#E8401A);box-shadow:0 10px 30px rgba(232,64,26,.5);
   transition:transform .12s,filter .12s}
 .cta:active{transform:scale(.98)} .cta:hover{filter:brightness(1.06)}
+.cta.off{filter:grayscale(1);opacity:.45;box-shadow:none;cursor:not-allowed}
+.check.err{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .hint{min-height:20px;margin-top:10px;text-align:center;font:600 14px var(--body);color:var(--mark)}
 
 /* стикер */
@@ -192,6 +195,15 @@ phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7'; })
 const setErr = (id, on) => document.getElementById(id).classList.toggle('err', on);
 form.addEventListener('input', e => e.target.closest('.field,.check')?.classList.remove('err'));
 
+// без принятой оферты кнопка серая и не пускает дальше
+const cta = form.querySelector('.cta');
+const syncCta = () => {
+  cta.classList.toggle('off', !form.agree.checked);
+  if (form.agree.checked && hint.textContent.includes('оферт')) hint.textContent = '';
+};
+form.agree.addEventListener('change', syncCta);
+syncCta();
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const name = form.name.value.trim();
@@ -203,7 +215,8 @@ form.addEventListener('submit', async e => {
   const okAgree = form.agree.checked;
   setErr('f-name', !okName); setErr('f-phone', !okPhone); setErr('f-email', !okEmail); setErr('f-agree', !okAgree);
   if (!okName || !okPhone || !okEmail || !okAgree) {
-    hint.textContent = !okName ? 'Впиши ФИО' : !okPhone ? 'Проверь номер телефона' : !okEmail ? 'Проверь почту' : 'Поставь галочку согласия';
+    hint.textContent = !okName ? 'Впиши ФИО' : !okPhone ? 'Проверь номер телефона' : !okEmail ? 'Проверь почту' : 'Без принятия оферты вступить нельзя';
+    if (!okAgree) { const c = document.getElementById('f-agree'); c.classList.remove('err'); void c.offsetWidth; c.classList.add('err'); }
     return;
   }
   hint.textContent = '';
